@@ -1,13 +1,13 @@
+package Game;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Othello {
     
 
-    private int boardSize = 8;
+    private static int boardSize = 8;
 
-    public Othello(int boardSize){
-        this.boardSize = boardSize;
+    public Othello(){
     }
 
 
@@ -34,14 +34,14 @@ public class Othello {
 
     }
 
-    public int getPlaceOnBoard(int[] board, int x, int y){
+    public static int getPlaceOnBoard(int[] board, int x, int y){
         // get the value of the board at position (x, y)
         return board[x*boardSize + y];
     }
 
 
     // TODO: implement a non brute force solution in the future
-    public List<int[]> getValidMoves(int[] board, int player){
+    public static List<int[]> getValidMoves(int[] board, int player){
         // get all valid moves for the player
         List<int[]> validMoves = new ArrayList<int[]>();
         for(int i = 0; i < boardSize; i++){
@@ -55,7 +55,7 @@ public class Othello {
     }
 
 
-    public boolean isValidMove(int[] board, int x, int y, int player){
+    public static boolean isValidMove(int[] board, int x, int y, int player){
         if(getPlaceOnBoard(board, x, y) != 0) return false;
         // check if the move is valid
         int[][] directions = getDirections();
@@ -78,7 +78,7 @@ public class Othello {
     }
 
 
-    public int[][] getDirections(){
+    public static int[][] getDirections(){
         // return directions such as (1,0), (0,1), (1,1), etc.
         return new int[][]{
             {1,0},
@@ -95,7 +95,7 @@ public class Othello {
     // Returns the scores of the game,
     // First element is the score of player 1 (black)
     // Second element is the score of player 2 (white)
-    public int[] getScores(int[] board){
+    public static int[] getScores(int[] board){
         // get the scores of the game
         int[] scores = new int[2];
         for(int i = 0; i < boardSize; i++){
@@ -111,7 +111,7 @@ public class Othello {
     }
 
 
-    public int[] getUpdatedBoard(int[] board, int x, int y, int player){
+    public static int[] getUpdatedBoard(int[] board, int x, int y, int player){
         // update the board with the move
         int[][] directions = getDirections();
         int[] newBoard = new int[boardSize*boardSize];
@@ -143,4 +143,5 @@ public class Othello {
         return newBoard;
 
     }
+
 }

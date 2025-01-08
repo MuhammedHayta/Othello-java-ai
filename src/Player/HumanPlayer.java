@@ -11,7 +11,7 @@ public class HumanPlayer implements Player {
     }
 
     @Override
-    public int[] getMove(int[] board, int player) {
+    public int[] getMove(int[] board, int player, int depth) {
         // Return the last clicked move immediately (or null if none)
         return clickedMove.getAndSet(null);
     }

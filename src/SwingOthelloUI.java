@@ -1,12 +1,20 @@
 import javax.swing.*;
+
+import Game.Othello;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.List;
+
+import Player.AI;
+import Player.AIPlayer1;
+import Player.AIPlayer2;
 import Player.HumanPlayer;
 import Player.Player;
 
 public class SwingOthelloUI extends JFrame {
     private Othello othello;
+    private int depth = 3;
     private Player player1;
     private Player player2;
     private int currentPlayer = 1; 
@@ -24,15 +32,32 @@ public class SwingOthelloUI extends JFrame {
 
     private void showMenu() {
         JPanel menuPanel = new JPanel(new FlowLayout());
-        String[] playerOptions = {"Human"}; 
+        String[] playerOptions = {"Human", "AI Player 1", "AI Player 2"};
         JComboBox<String> p1Dropdown = new JComboBox<>(playerOptions);
         JComboBox<String> p2Dropdown = new JComboBox<>(playerOptions);
         JButton startButton = new JButton("Start");
 
         startButton.addActionListener(e -> {
-            // For now, always create Human players
-            player1 = new HumanPlayer();
-            player2 = new HumanPlayer();
+            String selection1 = (String) p1Dropdown.getSelectedItem();
+            String selection2 = (String) p2Dropdown.getSelectedItem();
+            
+            //TODO: change this into a switch-case
+            if("Human".equals(selection1)){
+                player1 = new HumanPlayer();
+            } else if("AI Player 1".equals(selection1)){
+                player1 = new AIPlayer1();
+            } else if("AI Player 2".equals(selection1)){
+                player1 = new AIPlayer2();
+            }
+
+            if("Human".equals(selection2)){
+                player2 = new HumanPlayer();
+            } else if("AI Player 1".equals(selection2)){
+                player2 = new AIPlayer1();
+            } else if("AI Player 2".equals(selection2)){
+                player2 = new AIPlayer2();
+            }
+
             remove(menuPanel);
             initGame();
             revalidate();
@@ -48,7 +73,7 @@ public class SwingOthelloUI extends JFrame {
     }
 
     private void initGame() {
-        othello = new Othello(8);
+        othello = new Othello();
         board = othello.initializeBoard();
         boardPanel = new JPanel(new GridLayout(8, 8));
         statusLabel = new JLabel("Othello Game");
@@ -72,7 +97,7 @@ public class SwingOthelloUI extends JFrame {
                 } else {
                     tile.setBackground(Color.WHITE);
                 }
-                List<int[]> validMoves = othello.getValidMoves(board, currentPlayer);
+                List<int[]> validMoves = Othello.getValidMoves(board, currentPlayer);
                 if (isValidMoveInList(validMoves, x, y)) {
                     tile.setBorder(BorderFactory.createLineBorder(Color.YELLOW, 3));
                 }
@@ -96,12 +121,14 @@ public class SwingOthelloUI extends JFrame {
 
     private void handleTileClick(int x, int y) {
         Player current = (currentPlayer == 1) ? player1 : player2;
-        // Let the player record the click:
+        // If AI's turn, ignore clicks:
+        if (current instanceof AI) {
+            return;
+        }
         current.handleClick(x, y);
-        // Attempt to retrieve the move (null if none)
-        int[] move = current.getMove(board, currentPlayer);
-        if (move != null && othello.isValidMove(board, move[0], move[1], currentPlayer)) {
-            board = othello.getUpdatedBoard(board, move[0], move[1], currentPlayer);
+        int[] move = current.getMove(board, currentPlayer, depth);
+        if (move != null && Othello.isValidMove(board, move[0], move[1], currentPlayer)) {
+            board = Othello.getUpdatedBoard(board, move[0], move[1], currentPlayer);
             switchPlayer();
         } else {
             JOptionPane.showMessageDialog(this, "Invalid move!");
@@ -116,16 +143,33 @@ public class SwingOthelloUI extends JFrame {
             currentPlayer = 3 - currentPlayer;
             if (!canPlay(currentPlayer)) {
                 showEndGameOverlay();
+                return;
             }
+        }
+        // If it's AI's turn, do the move immediately
+        Player current = (currentPlayer == 1) ? player1 : player2;
+        if (current instanceof AI) {
+            doAiMove();
         }
     }
 
+    // Called when an AI player’s turn starts:
+    private void doAiMove() {
+        Player current = (currentPlayer == 1) ? player1 : player2;
+        int[] move = current.getMove(board, currentPlayer, depth);
+        if (move != null && Othello.isValidMove(board, move[0], move[1], currentPlayer)) {
+            board = Othello.getUpdatedBoard(board, move[0], move[1], currentPlayer);
+            switchPlayer();
+        }
+        drawBoard();
+    }
+
     private boolean canPlay(int player) {
-        return !othello.getValidMoves(board, player).isEmpty();
+        return !Othello.getValidMoves(board, player).isEmpty();
     }
 
     private void showEndGameOverlay() {
-        int[] scores = othello.getScores(board);
+        int[] scores = Othello.getScores(board);
         String msg = "Game Over!\nBlack: " + scores[0] + "  White: " + scores[1];
         JDialog endDialog = new JDialog(this, "Result", true);
         endDialog.setUndecorated(true);

@@ -1,11 +1,13 @@
 import java.util.List;
 
-import Player.HumanPlayer;
+import Game.Othello;
+//import Player.HumanPlayer;
 import Player.Player;
 
 public class Visual {
 
     private static int boardSize = 8;
+    private static int depth = 3;
 
     public static void main(String[] args){
         // Othello othello = new Othello(8);
@@ -21,30 +23,30 @@ public class Visual {
         int[] board = othello.initializeBoard();
         int player = 1;
         while(true){
-            List<int[]> validMoves = othello.getValidMoves(board, player);
+            List<int[]> validMoves = Othello.getValidMoves(board, player);
             if(validMoves.size() == 0){
                 player = 3 - player;
-                validMoves = othello.getValidMoves(board, player);
+                validMoves = Othello.getValidMoves(board, player);
                 if(validMoves.size() == 0){
                     break;
                 }
             }
             printBoard(board);
-            printScores(othello.getScores(board));
+            printScores(Othello.getScores(board));
             System.out.println("Player " + player + "'s turn");
             System.out.println("Enter your move: ");
-            int[] move = player == 1 ? player1.getMove(board, player) : player2.getMove(board, player);
+            int[] move = player == 1 ? player1.getMove(board, player, depth) : player2.getMove(board, player, depth);
             int x = move[0];
             int y = move[1];
-            if(othello.isValidMove(board, x, y, player)){
-                board = othello.getUpdatedBoard(board, x, y, player);
+            if(Othello.isValidMove(board, x, y, player)){
+                board = Othello.getUpdatedBoard(board, x, y, player);
                 player = 3 - player;
             } else {
                 System.out.println("Invalid move");
             }
         }
         printBoard(board);
-        printScores(othello.getScores(board));
+        printScores(Othello.getScores(board));
         
     }
 

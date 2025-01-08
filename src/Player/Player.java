@@ -2,7 +2,7 @@ package Player;
 
 public interface Player {
 
-    int[] getMove(int[] board, int player);
+    int[] getMove(int[] board, int player, int depth);
 
     // Called when the user clicks a tile.
     default void handleClick(int x, int y) {
