@@ -18,7 +18,6 @@ public class SwingOthelloUI extends JFrame {
     private int depth = 8;
     private boolean gameEnded = false;
     private boolean humanMadeMove = false;
-    private boolean aiMoving = false;
     private Player player1;
     private Player player2;
     private volatile int currentPlayer = 1;
@@ -95,15 +94,14 @@ public class SwingOthelloUI extends JFrame {
         SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
             @Override
             protected Void doInBackground() throws Exception {
+                int counter = 0;
                 while (!gameEnded) {
                     Player current = (currentPlayer == 1) ? player1 : player2;
 
                     if (current instanceof AI) {
-                        System.out.println("waiting for ai move");
-                        aiMoving = true;
+                        System.out.println("waiting for ai move " + counter++);
                         doAiMove();
                         switchPlayer();
-                        aiMoving = false;
                         System.out.println("AI move made");
                     } else if (current instanceof HumanPlayer) {
                         System.out.println("waiting for human move");
@@ -171,7 +169,8 @@ public class SwingOthelloUI extends JFrame {
         Player current = (currentPlayer == 1) ? player1 : player2;
         current.handleClick(x, y);
         int[] move = current.getMove(board, currentPlayer, depth);
-        if (move != null && Othello.isValidMove(board, move[0], move[1], currentPlayer)) {
+        if (move != null && Othello.isValidMove(board, move[0], move[1], currentPlayer)
+                && current instanceof HumanPlayer) {
             board = Othello.getUpdatedBoard(board, move[0], move[1], currentPlayer);
             humanMadeMove = true;
         } else if (aiMoving) {
