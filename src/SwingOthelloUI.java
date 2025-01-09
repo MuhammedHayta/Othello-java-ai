@@ -9,6 +9,7 @@ import java.util.List;
 import Player.AI;
 import Player.AIPlayer1;
 import Player.AIPlayer2;
+import Player.AIPlayer3;
 import Player.HumanPlayer;
 import Player.Player;
 
@@ -20,7 +21,7 @@ public class SwingOthelloUI extends JFrame {
     private boolean aiMoving = false;
     private Player player1;
     private Player player2;
-    private volatile int currentPlayer = 1; 
+    private volatile int currentPlayer = 1;
     private int[] board;
     private JPanel boardPanel;
     private JLabel statusLabel;
@@ -35,7 +36,7 @@ public class SwingOthelloUI extends JFrame {
 
     private void showMenu() {
         JPanel menuPanel = new JPanel(new FlowLayout());
-        String[] playerOptions = {"Human", "AI Player 1", "AI Player 2"};
+        String[] playerOptions = { "Human", "AI Player 1", "AI Player 2", "AI Player 3" };
         JComboBox<String> p1Dropdown = new JComboBox<>(playerOptions);
         JComboBox<String> p2Dropdown = new JComboBox<>(playerOptions);
         JButton startButton = new JButton("Start");
@@ -43,22 +44,26 @@ public class SwingOthelloUI extends JFrame {
         startButton.addActionListener(e -> {
             String selection1 = (String) p1Dropdown.getSelectedItem();
             String selection2 = (String) p2Dropdown.getSelectedItem();
-            
-            //TODO: change this into a switch-case
-            if("Human".equals(selection1)){
+
+            // TODO: change this into a switch-case
+            if ("Human".equals(selection1)) {
                 player1 = new HumanPlayer();
-            } else if("AI Player 1".equals(selection1)){
+            } else if ("AI Player 1".equals(selection1)) {
                 player1 = new AIPlayer1();
-            } else if("AI Player 2".equals(selection1)){
+            } else if ("AI Player 2".equals(selection1)) {
                 player1 = new AIPlayer2();
+            } else if ("AI Player 3".equals(selection1)) {
+                player1 = new AIPlayer3();
             }
 
-            if("Human".equals(selection2)){
+            if ("Human".equals(selection2)) {
                 player2 = new HumanPlayer();
-            } else if("AI Player 1".equals(selection2)){
+            } else if ("AI Player 1".equals(selection2)) {
                 player2 = new AIPlayer1();
-            } else if("AI Player 2".equals(selection2)){
+            } else if ("AI Player 2".equals(selection2)) {
                 player2 = new AIPlayer2();
+            } else if ("AI Player 3".equals(selection2)) {
+                player2 = new AIPlayer3();
             }
 
             remove(menuPanel);
@@ -86,13 +91,13 @@ public class SwingOthelloUI extends JFrame {
         drawBoard();
 
         gameEnded = false;
-        
+
         SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
             @Override
             protected Void doInBackground() throws Exception {
                 while (!gameEnded) {
                     Player current = (currentPlayer == 1) ? player1 : player2;
-    
+
                     if (current instanceof AI) {
                         System.out.println("waiting for ai move");
                         aiMoving = true;
@@ -100,9 +105,9 @@ public class SwingOthelloUI extends JFrame {
                         switchPlayer();
                         aiMoving = false;
                         System.out.println("AI move made");
-                    }else if (current instanceof HumanPlayer) {
+                    } else if (current instanceof HumanPlayer) {
                         System.out.println("waiting for human move");
-                        while(!humanMadeMove){
+                        while (!humanMadeMove) {
                             try {
                                 Thread.sleep(100);
                             } catch (InterruptedException e) {
@@ -110,23 +115,21 @@ public class SwingOthelloUI extends JFrame {
                             }
                         }
                         switchPlayer();
-                        humanMadeMove = false;     
-                        System.out.println("human move made");                   
+                        humanMadeMove = false;
+                        System.out.println("human move made");
                     }
                 }
                 return null;
             }
-    
+
             @Override
             protected void done() {
                 // Update UI after game ends if needed
             }
         };
-    
+
         worker.execute();
     }
-
-
 
     private void drawBoard() {
         boardPanel.removeAll();
@@ -171,10 +174,9 @@ public class SwingOthelloUI extends JFrame {
         if (move != null && Othello.isValidMove(board, move[0], move[1], currentPlayer)) {
             board = Othello.getUpdatedBoard(board, move[0], move[1], currentPlayer);
             humanMadeMove = true;
-        } else if(aiMoving) {
+        } else if (aiMoving) {
             JOptionPane.showMessageDialog(this, "AI is making a move, please wait!");
-        }
-        else{
+        } else {
             JOptionPane.showMessageDialog(this, "Invalid move!");
         }
         SwingUtilities.invokeLater(() -> drawBoard());
@@ -241,4 +243,3 @@ public class SwingOthelloUI extends JFrame {
         endDialog.setVisible(true);
     }
 }
-
