@@ -103,6 +103,7 @@ public class SwingOthelloUI extends JFrame {
                         doAiMove();
                         switchPlayer();
                         System.out.println("AI move made");
+
                     } else if (current instanceof HumanPlayer) {
                         System.out.println("waiting for human move");
                         while (!humanMadeMove) {
@@ -173,7 +174,7 @@ public class SwingOthelloUI extends JFrame {
                 && current instanceof HumanPlayer) {
             board = Othello.getUpdatedBoard(board, move[0], move[1], currentPlayer);
             humanMadeMove = true;
-        } else if (aiMoving) {
+        } else if (current instanceof AI) {
             JOptionPane.showMessageDialog(this, "AI is making a move, please wait!");
         } else {
             JOptionPane.showMessageDialog(this, "Invalid move!");
