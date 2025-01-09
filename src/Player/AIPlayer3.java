@@ -8,7 +8,7 @@ public class AIPlayer3 extends AI {
     @Override
     public int CalculateEvaluationScore(int[] board, int x, int y, int player) {
         int opponent = 3 - player;
-        int[] weights = { 1, 1, 1, 1 }; // Weights: Corners, Stability, Coin Parity, Mobility
+        int[] weights = { 30, 25, 25, 5 }; // Weights: Corners, Stability, Coin Parity, Mobility
 
         // Corners Heuristic
         int cornerScore = evaluateCorners(board, player, opponent);
