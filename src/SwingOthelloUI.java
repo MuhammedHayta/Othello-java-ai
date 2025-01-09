@@ -17,6 +17,7 @@ public class SwingOthelloUI extends JFrame {
     private int depth = 3;
     private boolean gameEnded = false;
     private boolean humanMadeMove = false;
+    private boolean aiMoving = false;
     private Player player1;
     private Player player2;
     private volatile int currentPlayer = 1; 
@@ -83,6 +84,8 @@ public class SwingOthelloUI extends JFrame {
         add(boardPanel, BorderLayout.CENTER);
         statusLabel.setText("Player " + currentPlayer + " (" + (currentPlayer == 1 ? "Black" : "White") + ")'s turn");
         drawBoard();
+
+        gameEnded = false;
         
         SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
             @Override
@@ -92,8 +95,10 @@ public class SwingOthelloUI extends JFrame {
     
                     if (current instanceof AI) {
                         System.out.println("waiting for ai move");
+                        aiMoving = true;
                         doAiMove();
                         switchPlayer();
+                        aiMoving = false;
                         System.out.println("AI move made");
                     }else if (current instanceof HumanPlayer) {
                         System.out.println("waiting for human move");
@@ -166,8 +171,10 @@ public class SwingOthelloUI extends JFrame {
         if (move != null && Othello.isValidMove(board, move[0], move[1], currentPlayer)) {
             board = Othello.getUpdatedBoard(board, move[0], move[1], currentPlayer);
             humanMadeMove = true;
-            // Removed the switchPlayer() call here so the background thread can handle it
-        } else {
+        } else if(aiMoving) {
+            JOptionPane.showMessageDialog(this, "AI is making a move, please wait!");
+        }
+        else{
             JOptionPane.showMessageDialog(this, "Invalid move!");
         }
         SwingUtilities.invokeLater(() -> drawBoard());
