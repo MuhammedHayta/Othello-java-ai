@@ -15,7 +15,7 @@ import Player.Player;
 
 public class SwingOthelloUI extends JFrame {
     private Othello othello;
-    private int depth = 10;
+    private int depth = 8;
     private boolean gameEnded = false;
     private boolean humanMadeMove = false;
     private boolean aiMoving = false;
