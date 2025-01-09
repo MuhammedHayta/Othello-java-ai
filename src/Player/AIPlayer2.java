@@ -1,23 +1,31 @@
 package Player;
 
-public class AIPlayer2 extends AI{
+public class AIPlayer2 extends AI {
 
+    final int[] weights = {
+            100, -20, 10, 5, 5, 10, -20, 100,
+            -20, -50, -5, -5, -5, -5, -50, -20,
+            10, -5, 5, 0, 0, 5, -5, 10,
+            5, -5, 0, 0, 0, 0, -5, 5,
+            5, -5, 0, 0, 0, 0, -5, 5,
+            10, -5, 5, 0, 0, 5, -5, 10,
+            -20, -50, -5, -5, -5, -5, -50, -20,
+            100, -20, 10, 5, 5, 10, -20, 100
+    };
 
     @Override
-    public int CalculateEvaluationScore(int[] board, int x, int y, int player){
+    public int CalculateEvaluationScore(int[] board, int x, int y, int player) {
         int score = 0;
-        int[] weights = {
-            20, -3, 11, 8, 8, 11, -3, 20,
-            -3, -7, -4, 1, 1, -4, -7, -3,
-            11, -4, 2, 2, 2, 2, -4, 11,
-            8, 1, 2, -3, -3, 2, 1, 8,
-            8, 1, 2, -3, -3, 2, 1, 8,
-            11, -4, 2, 2, 2, 2, -4, 11,
-            -3, -7, -4, 1, 1, -4, -7, -3,
-            20, -3, 11, 8, 8, 11, -3, 20
-        };
-        score += weights[x * 8 + y];
+
+        for (int i = 0; i < board.length; i++) {
+            if (board[i] == player) {
+                score += weights[i];
+            } else if (board[i] == 3 - player) {
+                score -= weights[i];
+            }
+        }
+
         return score;
     }
-    
+
 }
