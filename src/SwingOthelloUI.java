@@ -15,9 +15,11 @@ import Player.Player;
 public class SwingOthelloUI extends JFrame {
     private Othello othello;
     private int depth = 3;
+    private boolean gameEnded = false;
+    private boolean humanMadeMove = false;
     private Player player1;
     private Player player2;
-    private int currentPlayer = 1; 
+    private volatile int currentPlayer = 1; 
     private int[] board;
     private JPanel boardPanel;
     private JLabel statusLabel;
@@ -81,7 +83,45 @@ public class SwingOthelloUI extends JFrame {
         add(boardPanel, BorderLayout.CENTER);
         statusLabel.setText("Player " + currentPlayer + " (" + (currentPlayer == 1 ? "Black" : "White") + ")'s turn");
         drawBoard();
+        
+        SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                while (!gameEnded) {
+                    Player current = (currentPlayer == 1) ? player1 : player2;
+    
+                    if (current instanceof AI) {
+                        System.out.println("waiting for ai move");
+                        doAiMove();
+                        switchPlayer();
+                        System.out.println("AI move made");
+                    }else if (current instanceof HumanPlayer) {
+                        System.out.println("waiting for human move");
+                        while(!humanMadeMove){
+                            try {
+                                Thread.sleep(100);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        switchPlayer();
+                        humanMadeMove = false;     
+                        System.out.println("human move made");                   
+                    }
+                }
+                return null;
+            }
+    
+            @Override
+            protected void done() {
+                // Update UI after game ends if needed
+            }
+        };
+    
+        worker.execute();
     }
+
+
 
     private void drawBoard() {
         boardPanel.removeAll();
@@ -121,19 +161,16 @@ public class SwingOthelloUI extends JFrame {
 
     private void handleTileClick(int x, int y) {
         Player current = (currentPlayer == 1) ? player1 : player2;
-        // If AI's turn, ignore clicks:
-        if (current instanceof AI) {
-            return;
-        }
         current.handleClick(x, y);
         int[] move = current.getMove(board, currentPlayer, depth);
         if (move != null && Othello.isValidMove(board, move[0], move[1], currentPlayer)) {
             board = Othello.getUpdatedBoard(board, move[0], move[1], currentPlayer);
-            switchPlayer();
+            humanMadeMove = true;
+            // Removed the switchPlayer() call here so the background thread can handle it
         } else {
             JOptionPane.showMessageDialog(this, "Invalid move!");
         }
-        drawBoard();
+        SwingUtilities.invokeLater(() -> drawBoard());
     }
 
     private void switchPlayer() {
@@ -142,15 +179,13 @@ public class SwingOthelloUI extends JFrame {
         if (!canPlay(currentPlayer)) {
             currentPlayer = 3 - currentPlayer;
             if (!canPlay(currentPlayer)) {
+                SwingUtilities.invokeLater(() -> drawBoard());
+                gameEnded = true;
                 showEndGameOverlay();
                 return;
             }
         }
-        // If it's AI's turn, do the move immediately
-        Player current = (currentPlayer == 1) ? player1 : player2;
-        if (current instanceof AI) {
-            doAiMove();
-        }
+        SwingUtilities.invokeLater(() -> drawBoard());
     }
 
     // Called when an AI player’s turn starts:
@@ -159,9 +194,8 @@ public class SwingOthelloUI extends JFrame {
         int[] move = current.getMove(board, currentPlayer, depth);
         if (move != null && Othello.isValidMove(board, move[0], move[1], currentPlayer)) {
             board = Othello.getUpdatedBoard(board, move[0], move[1], currentPlayer);
-            switchPlayer();
         }
-        drawBoard();
+        SwingUtilities.invokeLater(() -> drawBoard());
     }
 
     private boolean canPlay(int player) {
@@ -183,11 +217,17 @@ public class SwingOthelloUI extends JFrame {
         panel.add(label, BorderLayout.CENTER);
         JButton restartButton = new JButton("Restart");
         restartButton.addActionListener(e -> {
+            // Stop the background loop
+            gameEnded = true;
+            // Reset game state
+            currentPlayer = 1;
+            // Remove dialog and UI, show the menu from scratch
             endDialog.dispose();
             getContentPane().removeAll();
             showMenu();
             revalidate();
             repaint();
+            // ...other resets as needed...
         });
         panel.add(restartButton, BorderLayout.SOUTH);
         endDialog.add(panel);

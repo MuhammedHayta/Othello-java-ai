@@ -2,8 +2,6 @@ package Player;
 
 public class AIPlayer2 extends AI{
 
-    public AIPlayer2(){
-    }
 
     @Override
     public int CalculateEvaluationScore(int[] board, int x, int y, int player){

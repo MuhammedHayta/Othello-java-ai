@@ -4,9 +4,6 @@ import Game.Othello;
 
 public class AIPlayer1 extends AI {
 
-    public AIPlayer1(){
-    }
-
     @Override
     public int CalculateEvaluationScore(int[] board, int x, int y, int player){
         int score = 0;
