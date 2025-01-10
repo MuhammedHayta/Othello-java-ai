@@ -1,6 +1,9 @@
 package Player;
 
 import java.util.List;
+import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import Game.Othello;
 
 public abstract class AI implements Player {
@@ -12,20 +15,35 @@ public abstract class AI implements Player {
             return null; // No valid moves
         }
 
-        int bestScore = Integer.MIN_VALUE;
-        int[] bestMove = new int[2];
+        AtomicInteger bestScore = new AtomicInteger(Integer.MIN_VALUE);
+        AtomicReference<int[]> bestMove = new AtomicReference<>(new int[2]);
+        Object lock = new Object();
+        List<Thread> threads = new ArrayList<>();
 
         for (int[] move : validMoves) {
-            int[] newBoard = Othello.getUpdatedBoard(board, move[0], move[1], player);
-            int score = minmax(newBoard, 3 - player, depth - 1, Integer.MIN_VALUE, Integer.MAX_VALUE, move[0],
-                    move[1])[0];
-            if (score > bestScore) {
-                bestScore = score;
-                bestMove = move;
+            Thread t = new Thread(() -> {
+                int[] newBoard = Othello.getUpdatedBoard(board, move[0], move[1], player);
+                int score = minmax(newBoard, 3 - player, depth - 1, Integer.MIN_VALUE, Integer.MAX_VALUE, move[0], move[1])[0];
+                synchronized (lock) {
+                    if (score > bestScore.get()) {
+                        bestScore.set(score);
+                        bestMove.set(move);
+                    }
+                }
+            });
+            threads.add(t);
+            t.start();
+        }
+
+        for (Thread t : threads) {
+            try {
+                t.join();
+            } catch (InterruptedException e) {
+                // Handle exception
             }
         }
 
-        return bestMove;
+        return bestMove.get();
     }
 
     public abstract int CalculateEvaluationScore(int[] board, int x, int y, int player);
