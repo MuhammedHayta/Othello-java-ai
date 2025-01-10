@@ -32,7 +32,7 @@ public abstract class AI implements Player {
 
     public int[] minmax(int[] board, int player, int depth, int alpha, int beta, int x, int y) {
         if (depth == 0 || Othello.isGameOver(board)) {
-            int score = CalculateEvaluationScore(board, x, y, player);
+            int score = CalculateEvaluationScore(board, x, y, 3 - player); // Evaluate for the opponent
             return new int[] { score, -1, -1 }; // No specific move
         }
 

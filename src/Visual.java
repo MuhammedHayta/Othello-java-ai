@@ -7,7 +7,7 @@ import Player.Player;
 public class Visual {
 
     private static int boardSize = 8;
-    private static int depth = 3;
+    private static int depth = 8;
 
     public static void main(String[] args) {
         // Othello othello = new Othello(8);
