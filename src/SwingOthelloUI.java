@@ -187,6 +187,7 @@ public class SwingOthelloUI extends JFrame {
         statusLabel.setText("Player " + currentPlayer + " (" + (currentPlayer == 1 ? "Black" : "White") + ")'s turn");
         if (!canPlay(currentPlayer)) {
             currentPlayer = 3 - currentPlayer;
+            statusLabel.setText("Player " + currentPlayer + " (" + (currentPlayer == 1 ? "Black" : "White") + ")'s turn");
             if (!canPlay(currentPlayer)) {
                 SwingUtilities.invokeLater(() -> drawBoard());
                 gameEnded = true;
