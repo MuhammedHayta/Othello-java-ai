@@ -187,7 +187,8 @@ public class SwingOthelloUI extends JFrame {
         statusLabel.setText("Player " + currentPlayer + " (" + (currentPlayer == 1 ? "Black" : "White") + ")'s turn");
         if (!canPlay(currentPlayer)) {
             currentPlayer = 3 - currentPlayer;
-            statusLabel.setText("Player " + currentPlayer + " (" + (currentPlayer == 1 ? "Black" : "White") + ")'s turn");
+            statusLabel
+                    .setText("Player " + currentPlayer + " (" + (currentPlayer == 1 ? "Black" : "White") + ")'s turn");
             if (!canPlay(currentPlayer)) {
                 SwingUtilities.invokeLater(() -> drawBoard());
                 gameEnded = true;
@@ -202,10 +203,19 @@ public class SwingOthelloUI extends JFrame {
     private void doAiMove() {
         Player current = (currentPlayer == 1) ? player1 : player2;
         int[] move = current.getMove(board, currentPlayer, depth);
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         if (move != null && Othello.isValidMove(board, move[0], move[1], currentPlayer)) {
             board = Othello.getUpdatedBoard(board, move[0], move[1], currentPlayer);
         }
+
         SwingUtilities.invokeLater(() -> drawBoard());
+
+        // Add a delay if the move is too fast
+
     }
 
     private boolean canPlay(int player) {
