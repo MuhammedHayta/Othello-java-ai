@@ -15,7 +15,7 @@ import Player.Player;
 
 public class SwingOthelloUI extends JFrame {
     private Othello othello;
-    private int depth = 10;
+    private int depth = 8;
     private boolean gameEnded = false;
     private boolean humanMadeMove = false;
     private Player player1;
@@ -187,6 +187,7 @@ public class SwingOthelloUI extends JFrame {
         statusLabel.setText("Player " + currentPlayer + " (" + (currentPlayer == 1 ? "Black" : "White") + ")'s turn");
         if (!canPlay(currentPlayer)) {
             currentPlayer = 3 - currentPlayer;
+            statusLabel.setText("Player " + currentPlayer + " (" + (currentPlayer == 1 ? "Black" : "White") + ")'s turn");
             if (!canPlay(currentPlayer)) {
                 SwingUtilities.invokeLater(() -> drawBoard());
                 gameEnded = true;
