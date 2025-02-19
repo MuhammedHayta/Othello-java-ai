@@ -53,19 +53,19 @@ The `JAVA PROJECTS` view in Visual Studio Code allows you to manage your depende
 
 ### AI-1 vs AI-2
 
-![ai1 vs ai2](videos/ai1-vs-ai2.mp4)
+https://github.com/user-attachments/assets/be3e973f-c89c-452d-bd90-6327abf07602
 
 ### AI-1 vs AI-3
 
-![ai1 vs ai3](videos/ai1-vs-ai3.mp4)
+https://github.com/user-attachments/assets/b3827f3c-4c94-4892-82f6-33883c176694
 
 ### AI-2 vs AI-3
 
-![ai2 vs ai3](videos/ai2-vs-ai3.mp4)
+https://github.com/user-attachments/assets/f7109eee-b37c-46a2-8c7b-19b72a46cc27
 
 ### Human vs AI-3
 
-![human vs ai3](videos/human-vs-ai3.mp4)
+https://github.com/user-attachments/assets/51ec19db-1d40-4ba7-94fd-1f912b23a60a
 
 ## Game Instructions
 
