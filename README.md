@@ -49,6 +49,24 @@ Meanwhile, the compiled output files will be generated in the `bin` folder by de
 
 The `JAVA PROJECTS` view in Visual Studio Code allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
 
+## Sample Videos
+
+### AI-1 vs AI-2
+
+![ai1 vs ai2](videos/ai1-vs-ai2.mp4)
+
+### AI-1 vs AI-3
+
+![ai1 vs ai3](videos/ai1-vs-ai3.mp4)
+
+### AI-2 vs AI-3
+
+![ai2 vs ai3](videos/ai2-vs-ai3.mp4)
+
+### Human vs AI-3
+
+![human vs ai3](videos/human-vs-ai3.mp4)
+
 ## Game Instructions
 
 - The game starts with a menu where you can select the type of players (Human or AI).
